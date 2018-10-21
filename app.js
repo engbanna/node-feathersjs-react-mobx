@@ -44,24 +44,12 @@ app.use('/items', service({
 }))
 app.use(express.errorHandler());
 
-// Clean up our data. This is optional and is here
-// because of our integration tests
-db.schema.dropTableIfExists('items').then(() => {
-  console.log('Dropped messages table');
-
-  // Initialize your table
-  return db.schema.createTable('items', table => {
+db.schema.createTableIfNotExists('items', table => {
     console.log('Creating messages table');
-    table.increments('id');
-    table.string('name');
-    table.text('description');
-  });
-}).then(() => {
-  // Create a dummy Message
-  app.service('items').create({
-    name: 'Item name 1',
-    description: 'Item description 1'
-  }).then(message => console.log('Created message', message));
+table.increments('id');
+table.string('name',150);
+table.text('description');
+
 });
 
 // Start the server.
